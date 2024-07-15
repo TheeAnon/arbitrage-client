@@ -20,7 +20,9 @@ export default function Home() {
 
   const fetchActiveArbitrages = async () => {
     try {
-      const response = await fetch("http://localhost:8000/arbitrages/active/");
+      const response = await fetch(
+        process.env("SERVER_URL") + "/arbitrages/active/"
+      );
       if (!response.ok) {
         alert("Failed to fetch data");
       }
