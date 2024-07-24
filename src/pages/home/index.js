@@ -21,7 +21,7 @@ export default function Home() {
   const fetchActiveArbitrages = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}/arbitrages/active/``${process.env.REACT_APP_SERVER_URL}/arbitrages/active/`
+        `${process.env.REACT_APP_SERVER_URL}/arbitrages/active/`
       );
       if (!response.ok) {
         alert("Failed to fetch data");
@@ -36,7 +36,7 @@ export default function Home() {
   const fetchHistory = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}/arbitrages/inactive/``${process.env.REACT_APP_SERVER_URL}/arbitrages/inactive/`
+        `${process.env.REACT_APP_SERVER_URL}/arbitrages/inactive/`
       );
       if (!response.ok) {
         alert("Failed to fetch data");
