@@ -13,7 +13,7 @@ export default function Home() {
     const interval = setInterval(() => {
       fetchActiveArbitrages();
       fetchHistory();
-    }, 10000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
