@@ -109,7 +109,7 @@ export default function Home() {
 
   async function deleteArbitrage(id) {
     try {
-      const response = await fetch(`/arbitrages/delete/${id}/`, {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/arbitrages/delete/${id}/`, {
         method: "DELETE",
       });
       if (response.ok) {
