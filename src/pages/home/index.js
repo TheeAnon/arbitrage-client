@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+
 export default function Home() {
   const [arbitrages, setArbitrages] = useState([]);
   const [arbitragesTab, setArbitragesTab] = useState(true);
@@ -27,6 +28,7 @@ export default function Home() {
         alert("Failed to fetch data");
       }
       const data = await response.json();
+      data.sort((a, b) => new Date(b.found) - new Date(a.found));
       setArbitrages(data);
     } catch (error) {
       console.error("Error fetching arbitrages:", error);
@@ -42,6 +44,7 @@ export default function Home() {
         alert("Failed to fetch data");
       }
       const data = await response.json();
+      data.sort((a, b) => new Date(b.ended) - new Date(a.ended));
       setHistory(data);
     } catch (error) {
       console.error("Error fetching arbitrages:", error);
@@ -51,7 +54,6 @@ export default function Home() {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
 
-    // Get month name abbreviation
     const monthNames = [
       "Jan",
       "Feb",
@@ -67,23 +69,14 @@ export default function Home() {
       "Dec",
     ];
     const monthAbbreviation = monthNames[date.getMonth()];
-
-    // Get day of the month
     const day = date.getDate();
-
-    // Get hours and minutes
     let hours = date.getHours();
     let minutes = date.getMinutes();
 
-    // Format hours with leading zero if necessary
     hours = hours.toString().padStart(2, "0");
-
-    // Format minutes with leading zero if necessary
     minutes = minutes.toString().padStart(2, "0");
 
-    // Construct the formatted date string
     const formattedDate = `${day} ${monthAbbreviation} ${hours}:${minutes}`;
-
     return formattedDate;
   };
 
@@ -121,6 +114,7 @@ export default function Home() {
       console.error(`Error deleting arbitrage with id ${id}: `, error);
     }
   }
+
 
   return (
     <div className="min-h-screen w-full flex flex-col p-4 gap-6">
