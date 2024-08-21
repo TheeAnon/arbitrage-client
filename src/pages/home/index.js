@@ -117,11 +117,11 @@ export default function Home() {
           method: "DELETE",
         }
       );
-      if (response.ok) {
-        console.log(`Arbitrage with id ${id} deleted successfully`);
-      } else {
-        console.error(`Failed to delete arbitrage with id ${id}`);
-      }
+      // if (response.ok) {
+      //   console.log(`Arbitrage with id ${id} deleted successfully`);
+      // } else {
+      //   console.error(`Failed to delete arbitrage with id ${id}`);
+      // }
     } catch (error) {
       console.error(`Error deleting arbitrage with id ${id}: `, error);
     }
@@ -165,33 +165,21 @@ export default function Home() {
             )}
           </div>
         </header>
-        {/* {paginateData(arbitrages).map((arbitrage) => {
+        <div className="flex flex-col grow p-4 gap-6 w-full overflow-y-scroll overflow-x-hidden">
+          {arbitragesTab ? (
+        {paginateData(arbitrages).map((arbitrage) => {
           const { wager1, wager2, payout, profit, arbPercentage } =
             calculateArbitrage(arbitrage);
 
           if (profit < 0) {
-            // Function to delete arbitrage from the database
             deleteArbitrage(arbitrage.id);
             return null;
           }
 
-          return ( */}
-        <div className="flex flex-col grow p-4 gap-6 w-full overflow-y-scroll overflow-x-hidden">
-          {arbitragesTab ? (
-            <>
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-              <ArbTile />
-            </>
+          return (
+              <ArbTile data={arbitrage} wager1={wager1} wager2=wager2 payout=payout, profit=profit, arbPercentage=percentage />)}
           ) : (
-            <HistoryTile />
+            <HistoryTile data={arbitrage}  />
           )}
         </div>
       </div>
