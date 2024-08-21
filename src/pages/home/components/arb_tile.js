@@ -1,15 +1,22 @@
-export const ArbTile = ({ data, wager1, wager2, payout, profit, percentage, formatDate }) => {
+export const ArbTile = ({
+  data,
+  wager1,
+  wager2,
+  payout,
+  profit,
+  arbPercentage,
+  formatDate,
+}) => {
   return (
     <div className="flex flex-wrap gap-4 rounded border p-4 relative">
       <div className="flex flex-col gap-2 relative p-2 rounded grow bg-slate-50">
         <span className="text-gray-400 text-xs flex gap-1 whitespace-nowrap">
           {formatDate(data["start_time"])}
-            {
-            data["is_live"] &&
-          <span className="self-start text-xs text-red-600 font-bold">
-            live
-          </span>
-          }
+          {data["is_live"] && (
+            <span className="self-start text-xs text-red-600 font-bold">
+              live
+            </span>
+          )}
         </span>
         <div className="font-bold flex gap-2 flex-col lg:flex-row">
           <span className="whitespace-nowrap">{data["home_team"]}</span>
@@ -20,7 +27,9 @@ export const ArbTile = ({ data, wager1, wager2, payout, profit, percentage, form
       </div>
       <div className="flex flex-col gap-2 p-2 rounded bg-gray-50">
         <span className="text-gray-400 text-sm">Market</span>
-        <span className="font-bold flex gap-2 items-center">{data["market"]}</span>
+        <span className="font-bold flex gap-2 items-center">
+          {data["market"]}
+        </span>
       </div>
       <div className="flex gap-4 justify-evenly bg-gray-50 rounded p-2 grow">
         <div className="flex flex-col gap-2 whitespace-nowrap">
@@ -52,10 +61,16 @@ export const ArbTile = ({ data, wager1, wager2, payout, profit, percentage, form
       <div className="flex justify-between gap-2">
         <div className="flex flex-col gap-2 p-2">
           <span className="text-gray-400 text-sm">Sites</span>
-          <a href={data["site_links"][0]} className="font-bold flex gap-2 items-center text-blue-500">
+          <a
+            href={data["site_links"][0]}
+            className="font-bold flex gap-2 items-center text-blue-500"
+          >
             {data["site_names"][0]}
           </a>
-          <a href={data["site_links"][1]} className="font-bold flex gap-2 items-center text-blue-500">
+          <a
+            href={data["site_links"][1]}
+            className="font-bold flex gap-2 items-center text-blue-500"
+          >
             {data["site_names"][1]}
           </a>
         </div>
@@ -65,7 +80,7 @@ export const ArbTile = ({ data, wager1, wager2, payout, profit, percentage, form
           <span className="font-bold text-lg flex gap-2 items-center text-green-600">
             € {profit}
             <span className="rounded-full px-2 text-xs bg-green-600 items-center text-white font-bold">
-              {percentage}%
+              {arbPercentage}%
             </span>
           </span>
         </div>

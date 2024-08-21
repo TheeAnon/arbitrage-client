@@ -1,4 +1,4 @@
-export const HistoryTile = ({ data }) => {
+export const HistoryTile = ({ data, arbPercentage, formatDate }) => {
   return (
     <div className="flex flex-wrap gap-4 rounded border p-4 relative">
       <div className="flex flex-col gap-2 relative p-2 rounded border grow">
@@ -14,7 +14,9 @@ export const HistoryTile = ({ data }) => {
       </div>
       <div className="flex flex-col gap-2 p-2 rounded bg-gray-50">
         <span className="text-gray-400 text-sm">Market</span>
-        <span className="font-bold flex gap-2 items-center">{data["market"]}</span>
+        <span className="font-bold flex gap-2 items-center">
+          {data["market"]}
+        </span>
       </div>
       <div className="flex gap-4 rounded bg-gray-50 p-2 grow justify-evenly">
         <div className="flex flex-col gap-2 whitespace-nowrap">
@@ -32,11 +34,9 @@ export const HistoryTile = ({ data }) => {
           <span className="text-gray-400 text-sm">Odds</span>
           <span className="whitespace-nowrap text-gray-500">
             {data["odds"][0]["odd_value"]}
-
           </span>
           <span className="whitespace-nowrap text-gray-500">
             {data["odds"][1]["odd_value"]}
-
           </span>
         </div>
       </div>
@@ -53,7 +53,7 @@ export const HistoryTile = ({ data }) => {
         <div className="flex flex-col gap-2 rounded bg-green-50 p-2 items-center">
           <span className="text-gray-400 text-sm">Arbitrage</span>
           <span className="font-bold text-lg flex gap-2 items-center text-green-600">
-            {percentage}
+            {arbPercentage}%
           </span>
         </div>
       </div>

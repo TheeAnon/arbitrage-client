@@ -185,6 +185,7 @@ export default function Home() {
                     payout={payout}
                     profit={profit}
                     arbPercentage={arbPercentage}
+                    formatDate={formatDate}
                   />
                 );
               })}
@@ -194,7 +195,11 @@ export default function Home() {
               {paginateData(history).map((arbitrage) => {
                 const { arbPercentage } = calculateArbitrage(arbitrage);
                 return (
-                  <HistoryTile data={arbitrage} percentage={arbPercentage} />
+                  <HistoryTile
+                    data={arbitrage}
+                    arbPercentage={arbPercentage}
+                    formatDate={formatDate}
+                  />
                 );
               })}
             </>

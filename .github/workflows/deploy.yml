@@ -1,23 +1,28 @@
-name: Github Page Deploy Workflow
+name: Install Nginx on Servers in multiple
 
 on:
   push:
-    branches: [main]
+    branches:
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        server_ip:
+          - 161.35.53.17
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          node-version: "12.x"
-      - run: npm ci
-      - run: npm run build
-      - name: Deploy
-        uses: crazy-max/ghaction-github-pages@v1
-        with:
-          target_branch: gh-pages
-          build_dir: build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Install Nginx on Server
+        run: |
+          ssh -i ~/.ssh/id_rsa  -o StrictHostKeyChecking=no suresh@${{ matrix.server_ip }} 'sudo apt-get update && sudo apt-get install -y nginx'
