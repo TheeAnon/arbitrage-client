@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-
+import { ArbTile } from "./components/arb_tile";
+import { HistoryTile } from "./components/history_tile";
 
 export default function Home() {
   const [arbitrages, setArbitrages] = useState([]);
@@ -7,7 +8,7 @@ export default function Home() {
   const [history, setHistory] = useState([]);
   const [wager, setWager] = useState(100);
   const [currentPage, setCurrentPage] = useState(1);
-const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
   useEffect(() => {
     fetchActiveArbitrages();
@@ -54,10 +55,10 @@ const [itemsPerPage, setItemsPerPage] = useState(20);
   };
 
   const paginateData = (data) => {
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  return data.slice(startIndex, endIndex);
-};
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return data.slice(startIndex, endIndex);
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -110,9 +111,12 @@ const [itemsPerPage, setItemsPerPage] = useState(20);
 
   async function deleteArbitrage(id) {
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/arbitrages/delete/${id}/`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/arbitrages/delete/${id}/`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
         console.log(`Arbitrage with id ${id} deleted successfully`);
       } else {
@@ -123,234 +127,74 @@ const [itemsPerPage, setItemsPerPage] = useState(20);
     }
   }
 
-
   return (
-  <div className="min-h-screen w-full flex flex-col p-4 gap-6">
-    <div className="w-full flex justify-between">
-      <h1 className="font-bold text-lg md:text-2xl">
-        {arbitragesTab ? "Active Arbitrage Opportunities" : "History"}
-      </h1>
-      <div className="flex gap-2">
-        {arbitragesTab && (
-          <>
-            <div className="flex gap-2 pl-2 items-center rounded border bg-slate-300">
-              <span>Wager €</span>
-              <input
-                value={wager}
-                onChange={(e) => setWager(e.target.value)}
-                type="number"
-                className="p-2 rounded flex grow"
-              />
-            </div>
-            <button
-              onClick={() => setArbitragesTab(false)}
-              className="p-2 rounded bg-slate-300 hover:opacity-70"
-            >
-              History
-            </button>
-          </>
-        )}
-        {!arbitragesTab && (
-          <button
-            onClick={() => setArbitragesTab(true)}
-            className="p-2 rounded bg-slate-300 hover:opacity-70"
-          >
-            View active opportunities
-          </button>
-        )}
+    <div className="min-h-screen w-full flex flex-col items-center">
+      <div className="min-h-screen h-screen flex flex-col p-4 gap-6 w-full max-w-7xl border-x overflow-hidden">
+        <header className="flex justify-between items-center">
+          <h1 className="font-bold text-lg md:text-xl">
+            {arbitragesTab ? "Active Arbitrage Opportunities" : "History"}
+          </h1>
+          <div className="flex gap-2">
+            {arbitragesTab ? (
+              <>
+                <div className="flex relative gap-2 pl-2 items-cente">
+                  <span className="absolute p-2 border-r self-center">
+                    Wager €
+                  </span>
+                  <input
+                    value={wager}
+                    onChange={(e) => setWager(e.target.value)}
+                    type="number"
+                    className="p-2 pl-20 rounded-full border border-black flex grow"
+                  />
+                </div>
+                <button
+                  onClick={() => setArbitragesTab(false)}
+                  className="p-2 rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
+                >
+                  History
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setArbitragesTab(true)}
+                className="p-2 rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
+              >
+                View active opportunities
+              </button>
+            )}
+          </div>
+        </header>
+        {/* {paginateData(arbitrages).map((arbitrage) => {
+          const { wager1, wager2, payout, profit, arbPercentage } =
+            calculateArbitrage(arbitrage);
+
+          if (profit < 0) {
+            // Function to delete arbitrage from the database
+            deleteArbitrage(arbitrage.id);
+            return null;
+          }
+
+          return ( */}
+        <div className="flex flex-col grow p-4 gap-6 w-full overflow-y-scroll overflow-x-hidden">
+          {arbitragesTab ? (
+            <>
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+              <ArbTile />
+            </>
+          ) : (
+            <HistoryTile />
+          )}
+        </div>
       </div>
-    </div>
-    <table className="table-auto border p-2">
-      <thead>
-        <tr className="bg-slate-200">
-          <th className="border border-slate-300 px-2 text-start">EVENT</th>
-          <th className="border border-slate-300 px-2 text-start">BET</th>
-          <th className="border border-slate-300 px-2 text-end">SIDES</th>
-          <th className="border border-slate-300 px-2 text-start">ODDS</th>
-          <th className="border border-slate-300 px-2">WAGER</th>
-          <th className="border border-slate-300 px-2">PAYOUT</th>
-          <th className="border border-slate-300 px-2">PROFIT</th>
-          <th className="border border-slate-300 px-2">ARB %</th>
-          <th className="border border-slate-300 px-2">SITES</th>
-        </tr>
-      </thead>
-      {arbitragesTab ? (
-        <tbody>
-          {paginateData(arbitrages).map((arbitrage) => {
-            const { wager1, wager2, payout, profit, arbPercentage } =
-              calculateArbitrage(arbitrage);
-
-            if (profit < 0) {
-              // Function to delete arbitrage from the database
-              deleteArbitrage(arbitrage.id);
-              return null;
-            }
-
-            return (
-              <tr key={arbitrage.id}>
-                <td className="border border-slate-300 p-2">
-                  <span>{formatDate(arbitrage.found)} </span>
-                  <span className="text-gray-400">
-                    {arbitrage.event_name}
-                  </span>
-                  <div className="w-full flex gap-2 items-center">
-                    <h2 className="text-lg font-semibold">
-                      {arbitrage.competitors}
-                    </h2>
-                  </div>
-                </td>
-                <td className="border border-slate-300 p-2">
-                  <span>{arbitrage.market}</span>
-                </td>
-                <td className="border border-slate-300 p-2 text-end">
-                  <h2 className="text-lg font-semibold">
-                    {arbitrage.sides[0]}
-                  </h2>
-                  <h2 className="text-lg font-semibold">
-                    {arbitrage.sides[1]}
-                  </h2>
-                </td>
-                <td className="border border-slate-300 p-2">
-                  <h2 className="text-lg">{arbitrage.site_one_odds}</h2>
-                  <h2 className="text-lg">{arbitrage.site_two_odds}</h2>
-                </td>
-                <td className="border border-slate-300 p-2 text-center font-bold text-lg">
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {wager1}
-                  </h3>
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {wager2}
-                  </h3>
-                </td>
-                <td className="border border-slate-300 p-2 text-center font-bold text-lg">
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {payout}
-                  </h3>
-                </td>
-                <td className="border border-slate-300 p-2 text-center text-green-500 font-bold text-lg">
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {profit}
-                  </h3>
-                </td>
-                <td className="border border-slate-300 p-2 text-center text-green-500 font-bold text-lg">
-                  {arbPercentage}%
-                </td>
-                <td className="p-2 border border-slate-300 text-center">
-                  <a
-                    href={arbitrage.site_one_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline whitespace-nowrap line-clamp-1 overflow-ellipsis"
-                  >
-                    {arbitrage.site_one_name}
-                  </a>
-                  <a
-                    href={arbitrage.site_two_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline whitespace-nowrap line-clamp-1 overflow-ellipsis"
-                  >
-                    {arbitrage.site_two_name}
-                  </a>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-) : (
-        <tbody>
-          {paginateData(history).map((arbitrage) => {
-            const { wager1, wager2, payout, profit, arbPercentage } =
-              calculateArbitrage(arbitrage);
-
-            if (profit < 0) {
-              // Function to delete arbitrage from the database
-              deleteArbitrage(arbitrage.id);
-              return null;
-            }
-
-            return (
-              <tr key={arbitrage.id}>
-                <td className="border border-slate-300 p-2">
-                  <span>{formatDate(arbitrage.found)} </span>
-                  <span className="text-gray-400">
-                    {arbitrage.event_name}
-                  </span>
-                  <div className="w-full flex gap-2 items-center">
-                    <h2 className="text-lg font-semibold">
-                      {arbitrage.competitors}
-                    </h2>
-                  </div>
-                </td>
-                <td className="border border-slate-300 p-2">
-                  <span>{arbitrage.market}</span>
-                </td>
-                <td className="border border-slate-300 p-2 text-end">
-                  <h2 className="text-lg font-semibold">
-                    {arbitrage.sides[0]}
-                  </h2>
-                  <h2 className="text-lg font-semibold">
-                    {arbitrage.sides[1]}
-                  </h2>
-                </td>
-                <td className="border border-slate-300 p-2">
-                  <h2 className="text-lg">{arbitrage.site_one_odds}</h2>
-                  <h2 className="text-lg">{arbitrage.site_two_odds}</h2>
-                </td>
-                <td className="border border-slate-300 p-2 text-center font-bold text-lg">
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {wager1}
-                  </h3>
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {wager2}
-                  </h3>
-                </td>
-                <td className="border border-slate-300 p-2 text-center font-bold text-lg">
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {payout}
-                  </h3>
-                </td>
-                <td className="border border-slate-300 p-2 text-center text-green-500 font-bold text-lg">
-                  <h3>
-                    <span className="text-sm font-normal">€ </span>
-                    {profit}
-                  </h3>
-                </td>
-                <td className="border border-slate-300 p-2 text-center text-green-500 font-bold text-lg">
-                  {arbPercentage}%
-                </td>
-                <td className="p-2 border border-slate-300 text-center">
-                  <a
-                    href={arbitrage.site_one_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline whitespace-nowrap line-clamp-1 overflow-ellipsis"
-                  >
-                    {arbitrage.site_one_name}
-                  </a>
-                  <a
-                    href={arbitrage.site_two_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline whitespace-nowrap line-clamp-1 overflow-ellipsis"
-                  >
-                    {arbitrage.site_two_name}
-                  </a>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-          
-        )}
-      </table>
     </div>
   );
 }
