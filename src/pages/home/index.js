@@ -167,19 +167,37 @@ export default function Home() {
         </header>
         <div className="flex flex-col grow p-4 gap-6 w-full overflow-y-scroll overflow-x-hidden">
           {arbitragesTab ? (
-        {paginateData(arbitrages).map((arbitrage) => {
-          const { wager1, wager2, payout, profit, arbPercentage } =
-            calculateArbitrage(arbitrage);
+            <>
+              {paginateData(arbitrages).map((arbitrage) => {
+                const { wager1, wager2, payout, profit, arbPercentage } =
+                  calculateArbitrage(arbitrage);
 
-          if (profit < 0) {
-            deleteArbitrage(arbitrage.id);
-            return null;
-          }
+                if (profit < 0) {
+                  deleteArbitrage(arbitrage.id);
+                  return null;
+                }
 
-          return (
-              <ArbTile data={arbitrage} wager1={wager1} wager2=wager2 payout=payout, profit=profit, arbPercentage=percentage />)}
+                return (
+                  <ArbTile
+                    data={arbitrage}
+                    wager1={wager1}
+                    wager2={wager2}
+                    payout={payout}
+                    profit={profit}
+                    arbPercentage={arbPercentage}
+                  />
+                );
+              })}
+            </>
           ) : (
-            <HistoryTile data={arbitrage}  />
+            <>
+              {paginateData(history).map((arbitrage) => {
+                const { arbPercentage } = calculateArbitrage(arbitrage);
+                return (
+                  <HistoryTile data={arbitrage} percentage={arbPercentage} />
+                );
+              })}
+            </>
           )}
         </div>
       </div>
