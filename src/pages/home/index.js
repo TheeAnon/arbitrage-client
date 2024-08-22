@@ -152,7 +152,7 @@ export default function Home() {
                   onClick={() => setArbitragesTab(false)}
                   className="p-2 rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
                 >
-                  History
+                  History Test
                 </button>
               </>
             ) : (
@@ -160,7 +160,7 @@ export default function Home() {
                 onClick={() => setArbitragesTab(true)}
                 className="p-2 rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
               >
-                View active opportunities Testtttt
+                View active opportunities
               </button>
             )}
           </div>
