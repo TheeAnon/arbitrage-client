@@ -1,9 +1,9 @@
-name: Deploy to Server
+name: Deploy to DigitalOcean
 
 on:
   push:
     branches:
-      - main
+      - main # Trigger deployment on push to the main branch
 
 jobs:
   deploy:
@@ -11,12 +11,30 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          host: 161.35.53.17
-          username: root
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: /var/www/latvian-arbitrage/client/deploy.sh
+          node-version: "16"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to server via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" | ssh-add -
+          ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+            cd /var/www/latvian-arbitrage/client/ &&
+            git pull &&
+            npm install &&
+            npm run build &&
+            sudo systemctl restart nginx
+          "
