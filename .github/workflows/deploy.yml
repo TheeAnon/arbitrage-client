@@ -1,28 +1,22 @@
-name: Install Nginx on Servers in multiple
+name: Deploy to Server
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        server_ip:
-          - 161.35.53.17
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Install Nginx on Server
-        run: |
-          ssh -i ~/.ssh/id_rsa  -o StrictHostKeyChecking=no suresh@${{ matrix.server_ip }} 'sudo apt-get update && sudo apt-get install -y nginx'
+          host: 161.35.53.17
+          username: root
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: /var/www/latvian-arbitrage/client/deploy.sh
