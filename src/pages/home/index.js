@@ -89,55 +89,17 @@ export default function Home() {
     return formattedDate;
   };
 
-  const calculateArbitrage = (arbitrage) => {
-    const odds1 = arbitrage.site_one_odds;
-    const odds2 = arbitrage.site_two_odds;
-    const totalImpliedProbability = 1 / odds1 + 1 / odds2;
-
-    const wager1 = (1 / odds1 / totalImpliedProbability) * wager;
-    const wager2 = (1 / odds2 / totalImpliedProbability) * wager;
-
-    const payout1 = wager1 * odds1;
-    const profit = payout1 - wager;
-
-    return {
-      wager1: wager1.toFixed(2),
-      wager2: wager2.toFixed(2),
-      payout: payout1.toFixed(2),
-      profit: profit.toFixed(2),
-      arbPercentage: ((profit / wager) * 100).toFixed(2),
-    };
-  };
-
-  async function deleteArbitrage(id) {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}/arbitrages/delete/${id}/`,
-        {
-          method: "DELETE",
-        }
-      );
-      // if (response.ok) {
-      //   console.log(`Arbitrage with id ${id} deleted successfully`);
-      // } else {
-      //   console.error(`Failed to delete arbitrage with id ${id}`);
-      // }
-    } catch (error) {
-      console.error(`Error deleting arbitrage with id ${id}: `, error);
-    }
-  }
-
   return (
     <div className="min-h-screen w-full flex flex-col items-center">
-      <div className="min-h-screen h-screen flex flex-col p-4 gap-6 w-full max-w-7xl border-x overflow-hidden">
-        <header className="flex justify-between items-center">
-          <h1 className="font-bold text-lg md:text-xl">
-            {arbitragesTab ? "Active Arbitrage Opportunities" : "History"}
+      <div className="min-h-screen h-screen flex flex-col p-2 md:p-4 gap-4 md:gap-6 w-full max-w-7xl border-x overflow-hidden">
+        <header className="flex justify-between items-center flex-wrap">
+          <h1 className="font-bold md:text-xl whitespace-nowrap">
+            {arbitragesTab ? "Active" : "History"}
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-between">
             {arbitragesTab ? (
               <>
-                <div className="flex relative gap-2 pl-2 items-cente">
+                <div className="flex relative gap-2 pl-2 items-center text-sm md:text-base">
                   <span className="absolute p-2 border-r self-center">
                     Wager €
                   </span>
@@ -145,20 +107,20 @@ export default function Home() {
                     value={wager}
                     onChange={(e) => setWager(e.target.value)}
                     type="number"
-                    className="p-2 pl-20 rounded-full border border-black flex grow"
+                    className="p-2 pl-20 rounded-full border border-black flex md:grow"
                   />
                 </div>
                 <button
                   onClick={() => setArbitragesTab(false)}
-                  className="p-2 rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
+                  className="p-2 text-xs md:text-base rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
                 >
-                  History Test
+                  History
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setArbitragesTab(true)}
-                className="p-2 rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
+                className="p-2 text-xs md:text-base rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
               >
                 View active opportunities
               </button>
@@ -168,43 +130,43 @@ export default function Home() {
         <div className="flex flex-col grow p-4 gap-6 w-full overflow-y-scroll overflow-x-hidden">
           {arbitragesTab ? (
             <>
-              {paginateData(arbitrages).map((arbitrage) => {
-                const { wager1, wager2, payout, profit, arbPercentage } =
-                  calculateArbitrage(arbitrage);
-
-                if (profit < 0) {
-                  deleteArbitrage(arbitrage.id);
-                  return null;
-                }
-
-                return (
-                  <ArbTile
-                    data={arbitrage}
-                    wager1={wager1}
-                    wager2={wager2}
-                    payout={payout}
-                    profit={profit}
-                    arbPercentage={arbPercentage}
-                    formatDate={formatDate}
-                  />
-                );
-              })}
+              {paginateData(arbitrages).map((arbitrage) => (
+                <ArbTile
+                  arbitrage={arbitrage}
+                  wager={wager}
+                  formatDate={formatDate}
+                />
+              ))}
             </>
           ) : (
             <>
-              {paginateData(history).map((arbitrage) => {
-                const { arbPercentage } = calculateArbitrage(arbitrage);
-                return (
-                  <HistoryTile
-                    data={arbitrage}
-                    arbPercentage={arbPercentage}
-                    formatDate={formatDate}
-                  />
-                );
-              })}
+              {paginateData(history).map((arbitrage) => (
+                <HistoryTile
+                  arbitrage={arbitrage}
+                  wager={wager}
+                  formatDate={formatDate}
+                />
+              ))}
             </>
           )}
         </div>
+        {/* <div className="flex gap-2 justify-center">
+          <button
+            onClick={() => prevPage()}
+            className="rounded-full p-2 border"
+          >
+            Previous page
+          </button>
+          <button className="rounded-full p-2 border bg-gray-50">
+            {currentPage}
+          </button>
+          <button
+            onClick={() => nextPage()}
+            className="rounded-full p-2 border"
+          >
+            Next page
+          </button>
+        </div> */}
       </div>
     </div>
   );
