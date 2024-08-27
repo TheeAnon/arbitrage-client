@@ -9,9 +9,8 @@ export const ArbTile = ({ arbitrage, wager, formatDate }) => {
       arbitrage["odds"][1]["odd_value"] /
       arbitrage["total_implied_probability"]) *
     wager;
-  const payout = arbitrage["odds"][0]["odd_value"] * wager1;
-  const profit = payout - wager;
-  const arbPercentage = (profit / wager) * 100;
+  const payout1 = arbitrage["odds"][0]["odd_value"] * Math.ceil(wager1);
+  const payout2 = arbitrage["odds"][1]["odd_value"] * Math.ceil(wager2);
 
   return (
     <div className="flex flex-wrap gap-4 rounded border p-4 relative">
@@ -29,8 +28,8 @@ export const ArbTile = ({ arbitrage, wager, formatDate }) => {
           <span className="text-gray-400 font-normal hidden lg:flex">vs</span>
           <span className="whitespace-nowrap">{arbitrage["away_team"]}</span>
         </div>
-        <span className="text-gray-400 text-xs">
-          {arbitrage["competition"]}
+        <span className="text-gray-400 text-xs items-center">
+          {arbitrage["sport"]} | {arbitrage["competition"]}
         </span>
       </div>
       <div className="flex flex-col gap-2 p-2 rounded bg-gray-50">
@@ -63,10 +62,10 @@ export const ArbTile = ({ arbitrage, wager, formatDate }) => {
         <div className="flex flex-col gap-2 items-end whitespace-nowrap">
           <span className="text-gray-400 text-sm">Wagger</span>
           <span className="font-bold whitespace-nowrap">
-            € {wager1.toFixed(2)}
+            € {Math.ceil(wager1)}
           </span>
           <span className="font-bold whitespace-nowrap">
-            € {wager2.toFixed(2)}
+            € {Math.ceil(wager2)}
           </span>
         </div>
       </div>
@@ -74,12 +73,16 @@ export const ArbTile = ({ arbitrage, wager, formatDate }) => {
         <div className="flex flex-col gap-2 p-2">
           <span className="text-gray-400 text-sm">Sites</span>
           <a
+            target="_blank"
+            rel="noreferrer"
             href={arbitrage["site_links"][0]}
             className="font-bold flex gap-2 items-center text-blue-500"
           >
             {arbitrage["site_names"][0]}
           </a>
           <a
+            target="_blank"
+            rel="noreferrer"
             href={arbitrage["site_links"][1]}
             className="font-bold flex gap-2 items-center text-blue-500"
           >
@@ -88,12 +91,25 @@ export const ArbTile = ({ arbitrage, wager, formatDate }) => {
         </div>
         <div className="flex flex-col gap-2 rounded bg-green-50 p-2">
           <span className="text-gray-400 text-sm">Payout</span>
-          <span className="font-bold text-sm">€ {payout.toFixed(2)}</span>
-          <span className="font-bold text-lg flex gap-2 items-center text-green-600">
-            € {profit.toFixed(2)}
-            <span className="rounded-full px-2 text-xs bg-green-600 items-center text-white font-bold">
-              {arbPercentage.toFixed(2)}%
-            </span>
+          <span className="font-bold">€ {payout1.toFixed(2)}</span>
+          <span className="font-bold">€ {payout2.toFixed(2)}</span>
+        </div>
+        <div className="flex flex-col gap-2 rounded bg-green-50 p-2">
+          <span className="text-gray-400 text-sm">Profit</span>
+          <span className="font-bold flex gap-2 items-center text-green-600">
+            € {(payout1 - wager).toFixed(2)}
+          </span>
+          <span className="font-bold flex gap-2 items-center text-green-600">
+            € {(payout2 - wager).toFixed(2)}
+          </span>
+        </div>
+        <div className="flex flex-col gap-2 rounded bg-green-50 p-2">
+          <span className="text-gray-400 text-sm">arb %</span>
+          <span className="rounded-full px-2 bg-green-600 items-center text-white font-bold">
+            {(((payout1 - wager) / wager) * 100).toFixed(2)}%
+          </span>
+          <span className="rounded-full px-2 bg-green-600 items-center text-white font-bold">
+            {(((payout2 - wager) / wager) * 100).toFixed(2)}%
           </span>
         </div>
       </div>

@@ -12,8 +12,10 @@ export const HistoryTile = ({ arbitrage, formatDate, wager }) => {
     <div className="flex flex-wrap gap-4 rounded border p-4 relative">
       <div className="flex flex-col gap-2 relative p-2 rounded border grow">
         <span className="text-gray-400 whitespace-nowrap text-xs">
-          {formatDate(arbitrage["found_at"])} -{" "}
-          {formatDate(arbitrage["ended_at"])}
+          Found on {formatDate(arbitrage["found_at"])}
+        </span>
+        <span className="text-gray-400 whitespace-nowrap text-xs">
+          Ended on {formatDate(arbitrage["ended_at"])}
         </span>
         <div className="font-bold flex gap-2 flex-col lg:flex-row">
           <span className="whitespace-nowrap">{arbitrage["home_team"]}</span>
@@ -21,7 +23,7 @@ export const HistoryTile = ({ arbitrage, formatDate, wager }) => {
           <span className="whitespace-nowrap">{arbitrage["away_team"]}</span>
         </div>
         <span className="text-gray-400 text-xs">
-          {arbitrage["competition"]}
+          {arbitrage["sport"]} | {arbitrage["competition"]}
         </span>
       </div>
       <div className="flex flex-col gap-2 p-2 rounded bg-gray-50">
@@ -55,12 +57,12 @@ export const HistoryTile = ({ arbitrage, formatDate, wager }) => {
       <div className="flex justify-between gap-2">
         <div className="flex flex-col gap-2 p-2">
           <span className="text-gray-400 text-sm">Sites</span>
-          <a className="font-bold flex gap-2 items-center text-blue-500">
+          <p className="font-bold flex gap-2 items-center text-blue-500">
             {arbitrage["site_names"][0]}
-          </a>
-          <a className="font-bold flex gap-2 items-center text-blue-500">
+          </p>
+          <p className="font-bold flex gap-2 items-center text-blue-500">
             {arbitrage["site_names"][1]}
-          </a>
+          </p>
         </div>
         <div className="flex flex-col gap-2 rounded bg-green-50 p-2 items-center">
           <span className="text-gray-400 text-sm">Arbitrage</span>

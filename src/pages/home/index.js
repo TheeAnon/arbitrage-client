@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, act } from "react";
 import { ArbTile } from "./components/arb_tile";
 import { HistoryTile } from "./components/history_tile";
 
@@ -7,7 +7,8 @@ export default function Home() {
   const [arbitragesTab, setArbitragesTab] = useState(true);
   const [history, setHistory] = useState([]);
   const [wager, setWager] = useState(100);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [activePage, setActivePage] = useState(1);
+  const [historyPage, setHistoryPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
 
   useEffect(() => {
@@ -43,9 +44,9 @@ export default function Home() {
       const response = await fetch(
         `${process.env.REACT_APP_SERVER_URL}/arbitrages/inactive/`
       );
-      if (!response.ok) {
-        alert("Failed to fetch data");
-      }
+      // if (!response.ok) {
+      //   alert("Failed to fetch data");
+      // }
       const data = await response.json();
       data.sort((a, b) => new Date(b.ended) - new Date(a.ended));
       setHistory(data);
@@ -55,9 +56,33 @@ export default function Home() {
   };
 
   const paginateData = (data) => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
+    const startIndex = (activePage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return data.slice(startIndex, endIndex);
+  };
+
+  const prevPage = () => {
+    if (arbitragesTab) {
+      if (activePage !== 1 && arbitrages.length / itemsPerPage < activePage) {
+        setActivePage(activePage - 1);
+      }
+    } else {
+      if (historyPage !== 1 && history.length / itemsPerPage < historyPage) {
+        setHistoryPage(historyPage - 1);
+      }
+    }
+  };
+
+  const nextPage = () => {
+    if (arbitragesTab) {
+      if (Math.ceil(arbitrages.length / itemsPerPage) > activePage) {
+        setActivePage(activePage + 1);
+      }
+    } else {
+      if (Math.ceil(history.length / itemsPerPage) < historyPage) {
+        setHistoryPage(historyPage + 1);
+      }
+    }
   };
 
   const formatDate = (dateString) => {
@@ -149,24 +174,32 @@ export default function Home() {
               ))}
             </>
           )}
+          <div className="flex gap-2 justify-center mt-auto">
+            <button
+              onClick={() => prevPage()}
+              className="rounded-full p-2 border hover:bg-blue-500 hover:text-white"
+            >
+              Previous page
+            </button>
+            <button className="rounded-full p-2 border bg-gray-50">
+              {arbitragesTab ? (
+                <>
+                  {activePage}/{Math.ceil(arbitrages.length / itemsPerPage)}
+                </>
+              ) : (
+                <>
+                  {historyPage}/{Math.ceil(history.length / itemsPerPage)}
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => nextPage()}
+              className="rounded-full p-2 border hover:bg-blue-500 hover:text-white"
+            >
+              Next page
+            </button>
+          </div>
         </div>
-        {/* <div className="flex gap-2 justify-center">
-          <button
-            onClick={() => prevPage()}
-            className="rounded-full p-2 border"
-          >
-            Previous page
-          </button>
-          <button className="rounded-full p-2 border bg-gray-50">
-            {currentPage}
-          </button>
-          <button
-            onClick={() => nextPage()}
-            className="rounded-full p-2 border"
-          >
-            Next page
-          </button>
-        </div> */}
       </div>
     </div>
   );
