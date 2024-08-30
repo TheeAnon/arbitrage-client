@@ -1,4 +1,4 @@
-import { useState, useEffect, act } from "react";
+import { useState, useEffect } from "react";
 import { ArbTile } from "./components/arb_tile";
 import { HistoryTile } from "./components/history_tile";
 
@@ -18,7 +18,7 @@ export default function Home() {
     const interval = setInterval(() => {
       fetchActiveArbitrages();
       fetchHistory();
-    }, 1000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -28,9 +28,6 @@ export default function Home() {
       const response = await fetch(
         `${process.env.REACT_APP_SERVER_URL}/arbitrages/active/`
       );
-      // if (!response.ok) {
-      //   alert("Failed to fetch data");
-      // }
       const data = await response.json();
       data.sort((a, b) => new Date(b.found) - new Date(a.found));
       setArbitrages(data);
@@ -44,50 +41,46 @@ export default function Home() {
       const response = await fetch(
         `${process.env.REACT_APP_SERVER_URL}/arbitrages/inactive/`
       );
-      // if (!response.ok) {
-      //   alert("Failed to fetch data");
-      // }
       const data = await response.json();
       data.sort((a, b) => new Date(b.ended) - new Date(a.ended));
       setHistory(data);
     } catch (error) {
-      console.error("Error fetching arbitrages:", error);
+      console.error("Error fetching history:", error);
     }
   };
 
-  const paginateData = (data) => {
-    const startIndex = (activePage - 1) * itemsPerPage;
+  const paginateData = (data, page) => {
+    const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return data.slice(startIndex, endIndex);
   };
 
   const prevPage = () => {
     if (arbitragesTab) {
-      if (activePage !== 1 && arbitrages.length / itemsPerPage < activePage) {
-        setActivePage(activePage - 1);
+      if (activePage > 1) {
+        setActivePage((prev) => prev - 1);
       }
     } else {
-      if (historyPage !== 1 && history.length / itemsPerPage < historyPage) {
-        setHistoryPage(historyPage - 1);
+      if (historyPage > 1) {
+        setHistoryPage((prev) => prev - 1);
       }
     }
   };
 
   const nextPage = () => {
     if (arbitragesTab) {
-      if (Math.ceil(arbitrages.length / itemsPerPage) > activePage) {
-        setActivePage(activePage + 1);
+      if (activePage < Math.ceil(arbitrages.length / itemsPerPage)) {
+        setActivePage((prev) => prev + 1);
       }
     } else {
-      if (Math.ceil(history.length / itemsPerPage) < historyPage) {
-        setHistoryPage(historyPage + 1);
+      if (historyPage < Math.ceil(history.length / itemsPerPage)) {
+        setHistoryPage((prev) => prev + 1);
       }
     }
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-
     const monthNames = [
       "Jan",
       "Feb",
@@ -106,18 +99,18 @@ export default function Home() {
     const day = date.getDate();
     let hours = date.getHours();
     let minutes = date.getMinutes();
-
     hours = hours.toString().padStart(2, "0");
     minutes = minutes.toString().padStart(2, "0");
-
-    const formattedDate = `${day} ${monthAbbreviation} ${hours}:${minutes}`;
-    return formattedDate;
+    return `${day} ${monthAbbreviation} ${hours}:${minutes}`;
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center">
+    <div id="main" className="min-h-screen w-full flex flex-col items-center">
       <div className="min-h-screen h-screen flex flex-col p-2 md:p-4 gap-4 md:gap-6 w-full max-w-7xl border-x overflow-hidden">
-        <header className="flex justify-between items-center flex-wrap">
+        <header
+          id="nav"
+          className="flex md:justify-between md:items-center flex-col gap-2 md:flex-row"
+        >
           <h1 className="font-bold md:text-xl whitespace-nowrap">
             {arbitragesTab ? "Active" : "History"}
           </h1>
@@ -152,11 +145,15 @@ export default function Home() {
             )}
           </div>
         </header>
-        <div className="flex flex-col grow p-4 gap-6 w-full overflow-y-scroll overflow-x-hidden">
+        <div
+          id="content"
+          className="flex flex-col grow p-4 gap-6 w-full overflow-y-scroll overflow-x-hidden"
+        >
           {arbitragesTab ? (
             <>
-              {paginateData(arbitrages).map((arbitrage) => (
+              {paginateData(arbitrages, activePage).map((arbitrage) => (
                 <ArbTile
+                  key={arbitrage.id}
                   arbitrage={arbitrage}
                   wager={wager}
                   formatDate={formatDate}
@@ -165,8 +162,9 @@ export default function Home() {
             </>
           ) : (
             <>
-              {paginateData(history).map((arbitrage) => (
+              {paginateData(history, historyPage).map((arbitrage) => (
                 <HistoryTile
+                  key={arbitrage.id}
                   arbitrage={arbitrage}
                   wager={wager}
                   formatDate={formatDate}
@@ -176,7 +174,7 @@ export default function Home() {
           )}
           <div className="flex gap-2 justify-center mt-auto">
             <button
-              onClick={() => prevPage()}
+              onClick={prevPage}
               className="rounded-full p-2 border hover:bg-blue-500 hover:text-white"
             >
               Previous page
@@ -193,7 +191,7 @@ export default function Home() {
               )}
             </button>
             <button
-              onClick={() => nextPage()}
+              onClick={nextPage}
               className="rounded-full p-2 border hover:bg-blue-500 hover:text-white"
             >
               Next page
