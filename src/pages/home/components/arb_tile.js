@@ -164,19 +164,13 @@ export const ArbTile = ({ arbitrage, wager, formatDate }) => {
                         € {(payout2 - wager).toFixed(2)}
                     </span>
                 </div>
-                <div className="flex flex-col gap-2 rounded bg-green-50 p-2">
-                    <span className="text-gray-400 text-sm">arb %</span>
+                <div className="flex flex-col gap-2 rounded bg-green-50 p-2 items-center">
+                    <span className="text-gray-400 text-sm">Arbitrage</span>
                     <span
-                        id="arb_percentage1"
-                        className="rounded-full px-2 bg-green-600 items-center text-white font-bold"
+                        id="arbitrage_percentage"
+                        className="font-bold text-lg flex gap-2 items-center text-green-600"
                     >
-                        {(((payout1 - wager) / wager) * 100).toFixed(2)}%
-                    </span>
-                    <span
-                        id="arb_percentage2"
-                        className="rounded-full px-2 bg-green-600 items-center text-white font-bold"
-                    >
-                        {(((payout2 - wager) / wager) * 100).toFixed(2)}%
+                        {arbitrage["arbitrage_percentage"]}%
                     </span>
                 </div>
             </div>
