@@ -28,8 +28,7 @@ export default function Home() {
       const response = await fetch(
         `${process.env.REACT_APP_SERVER_URL}/arbitrages/active/`
       );
-      const data = await response.json();
-      data.sort((a, b) => new Date(b.found) - new Date(a.found));
+      let data = await response.json();
       data = data.filter((arb) => parseFloat(arb.arbitrage_percentage) >= 5);
       setArbitrages(data);
     } catch (error) {
