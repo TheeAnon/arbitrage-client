@@ -30,7 +30,7 @@ export default function Home() {
       );
       const data = await response.json();
       data.sort((a, b) => new Date(b.found) - new Date(a.found));
-      data.filter((arb) => arb.arbitrage_percentage >= 5);
+      data = data.filter((arb) => arb.arbitrage_percentage >= 5);
       setArbitrages(data);
     } catch (error) {
       console.error("Error fetching arbitrages:", error);
