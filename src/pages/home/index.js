@@ -29,7 +29,7 @@ export default function Home() {
         `${process.env.REACT_APP_SERVER_URL}/arbitrages/active/`
       );
       let data = await response.json();
-      data = data.filter((arb) => parseFloat(arb.arbitrage_percentage) >= 5);
+      data = data.filter((arb) => parseFloat(arb.arbitrage_percentage) >= 0);
       setArbitrages(data);
     } catch (error) {
       console.error("Error fetching arbitrages:", error);
