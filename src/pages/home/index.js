@@ -17,7 +17,6 @@ export default function Home() {
 
     const interval = setInterval(() => {
       fetchActiveArbitrages();
-      fetchHistory();
     }, 1000);
 
     return () => clearInterval(interval);
@@ -137,7 +136,10 @@ export default function Home() {
               </>
             ) : (
               <button
-                onClick={() => setArbitragesTab(true)}
+                onClick={() => {
+                  fetchHistory();
+                  setArbitragesTab(true);
+                }}
                 className="p-2 text-xs md:text-base rounded-full bg-blue-800 font-bold text-white/90 px-4 hover:scale-90"
               >
                 View active opportunities
